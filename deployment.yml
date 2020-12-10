@@ -29,7 +29,7 @@ spec:
       - name: docker-creds
       containers:
         - name: hello-world-new
-          image: bhagyam90/hello-world:latest
+          image: bhagyam90/hello-world:0.1.1
           ports:
             - containerPort: 5858
               name: http
