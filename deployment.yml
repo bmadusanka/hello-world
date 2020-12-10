@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-new
+  labels:
+    app: debug
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 4
+  selector:
+    matchLabels:
+      tier: frontend
+      version: v1
+  template:
+    metadata:
+      name: hello-world-new
+      labels:
+        tier: frontend
+        version: v1
+        app: debug
+    spec:
+      imagePullSecrets:
+      - name: docker-creds
+      containers:
+        - name: hello-world-new
+          image: bhagyam90/hello-world:latest
+          ports:
+            - containerPort: 5858
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5858
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5858
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 20
+            failureThreshold: 3
